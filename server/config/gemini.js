@@ -13,7 +13,7 @@ let genAI = null;
 
 export const getGeminiModel = (customModel) => {
   const currentKey = process.env.GEMINI_API_KEY;
-  const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+  const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
   if (!currentKey) {
     throw new Error('GEMINI_API_KEY is missing. Please configure it in .env');

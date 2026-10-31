@@ -81,6 +81,23 @@ export const callGemini = async (prompt, maxRetries = 2) => {
  * even before configuring an external Google Gemini API key.
  */
 const generateLocalFallback = (prompt) => {
+  if (prompt.includes('USER ACCUSATION') || prompt.includes('forensic evaluation specialist')) {
+    const isCorrect = prompt.includes('Result: CORRECT');
+    return {
+      isCorrect,
+      summary: isCorrect
+        ? 'Case Solved! Your deduction uncovered the culprit.'
+        : 'Case Closed. The evidence points to another suspect.',
+      detailedFeedback: isCorrect
+        ? 'Outstanding deductive analysis, Detective. Your assessment aligned directly with the forensic evidence recovered from the scene, demonstrating a thorough grasp of the timeline and physical clues.'
+        : 'A plausible deduction, but subsequent analysis of the physical evidence, timeline logs, and digital breadcrumbs revealed that this suspect was a carefully orchestrated red herring. The true culprit capitalized on an alibi window.',
+      keyOverlookedOrConnectedClues: [
+        'Electronic access logs cross-referenced with security terminal timestamps.',
+        'Physical recovery records contradicting initial witness statements.'
+      ]
+    };
+  }
+
   if (prompt.includes('CRITICAL RULES FOR LOGICAL MYSTERY PUZZLE DESIGN')) {
     // Blueprint fallback
     return {
