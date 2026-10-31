@@ -4,6 +4,8 @@
   "description": "AI-Powered Interactive Mystery Investigation Platform",
   "private": true,
   "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,magenta\" \"npm run server\" \"npm run client\"",
+    "start": "npm run dev",
     "server": "npm run dev --prefix server",
     "client": "npm run dev --prefix client",
     "build:client": "npm run build --prefix client",
@@ -20,5 +22,8 @@
     "mongodb"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
