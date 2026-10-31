@@ -2,6 +2,28 @@
 
 All notable changes and phase completions are documented in this file in accordance with the Master Specification (SSOT).
 
+## [1.1.0] - 2026-10-31
+
+### Realistic Case File & Evidence Variety System
+- **Dynamic Category-Based Generation:** Upgraded Gemini blueprint and evidence generation prompts to dynamically select evidence formats tailored to the crime category (e.g. medical reports & crime scene photos for Murder; emails & access logs for Cybercrime; phone call logs & witness statements for Missing Persons).
+- **Specialized Realistic Viewers:**
+  - `PoliceReportView`: Official precinct memorandum with case numbers, intake narrative, scene observations, and officer conclusions.
+  - `MedicalReportView`: Autopsy and clinical pathology findings with trauma assessment, toxicology analysis, and certified examiner sign-offs.
+  - `EmailView`: Desktop email client with verified DKIM badges, header chains, and attachment previews.
+  - `CallLogView`: Subpoenaed telecommunications call records table with cell tower locations and flagged anomalous calls.
+  - `FinancialRecordView`: Forensic bank statement and audit ledger with debit/credit tracking and offshore transfer alerts.
+  - `AccessLogView`: Biometric and RFID keycard access manifest with GRANTED/DENIED security status.
+  - `HandwrittenNoteView`: Paper artifact rendering with forensic handwriting examination and side-by-side transcription.
+  - `PhotoEvidenceView`: High-resolution photographic evidence inspector with zoom-in capability and yellow evidence tent tags.
+  - `WitnessStatementView`: Deposition transcript with witness capacity, sworn statement, and digital signature acknowledgment.
+  - Enhanced `ChatMessageView`: WhatsApp layout with delivery checkmarks, online state indicator, and encryption divider pills.
+- **Case File Dashboard:**
+  - Upgraded evidence browser inside the Investigation Room with category tabs (*All Evidence, Digital Evidence, Visual Evidence, Official Reports, Witness Statements, Physical & Financial*).
+  - Added suspect filter to view all clues linked to a specific person of interest.
+  - Added review status filter (*Bookmarked, Reviewed, Unreviewed*) and real-time keyword search.
+- **Database & Pipeline Compatibility:**
+  - Extended `Evidence` model with `category`, `source`, `metadata`, and expanded type support while maintaining backward compatibility.
+
 ## [1.0.0] - 2026-10-31
 
 ### Phase 1: Project Setup

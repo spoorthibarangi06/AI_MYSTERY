@@ -14,8 +14,33 @@ const evidenceSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['message', 'image', 'cctv', 'witness_statement', 'physical_evidence', 'document'],
+      enum: [
+        'message',
+        'cctv',
+        'police_report',
+        'witness_statement',
+        'medical_report',
+        'email',
+        'call_log',
+        'financial_record',
+        'access_log',
+        'photo',
+        'image',
+        'handwritten_note',
+        'physical_evidence',
+        'document',
+      ],
       required: true,
+    },
+    category: {
+      type: String,
+      enum: ['digital', 'visual', 'official_report', 'witness_statement', 'physical', 'document'],
+      default: 'document',
+      index: true,
+    },
+    source: {
+      type: String,
+      default: 'Forensic Investigation Unit',
     },
     title: {
       type: String,
@@ -45,6 +70,10 @@ const evidenceSchema = new mongoose.Schema(
     timestamp: {
       type: String,
       default: '',
+    },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
     },
   },
   {

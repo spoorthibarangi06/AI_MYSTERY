@@ -201,22 +201,28 @@ export const InvestigationPage = () => {
         <aside className="w-full md:w-64 bg-[#0E141C] border-r border-[#293444] p-4 flex md:flex-col gap-1.5 overflow-x-auto md:overflow-x-visible shrink-0">
           {[
             { id: 'overview', label: 'Case Overview', icon: FileText },
-            { id: 'suspects', label: `Suspects (${suspects.length})`, icon: Users },
-            { id: 'evidence', label: `Evidence Files (${evidenceList.length})`, icon: Search },
+            { id: 'suspects', label: `Suspect Dossiers (${suspects.length})`, icon: Users },
+            { id: 'evidence', label: `Evidence Docket (${evidenceList.length})`, icon: Search },
             {
-              id: 'messages',
-              label: 'WhatsApp Chats',
-              icon: MessageSquare,
-              count: evidenceList.filter((e) => e.type === 'message').length,
+              id: 'official_reports',
+              label: 'Official Reports',
+              icon: Shield,
+              count: evidenceList.filter((e) => ['police_report', 'medical_report'].includes(e.type)).length,
             },
             {
-              id: 'cctv',
-              label: 'CCTV Feeds',
+              id: 'digital',
+              label: 'Digital Forensics',
+              icon: MessageSquare,
+              count: evidenceList.filter((e) => ['message', 'email', 'call_log', 'access_log'].includes(e.type)).length,
+            },
+            {
+              id: 'visual',
+              label: 'Surveillance & Photos',
               icon: Video,
-              count: evidenceList.filter((e) => e.type === 'cctv').length,
+              count: evidenceList.filter((e) => ['cctv', 'photo', 'image'].includes(e.type)).length,
             },
             { id: 'timeline', label: 'Case Timeline', icon: Clock },
-            { id: 'accuse', label: 'Indict Suspect', icon: ShieldAlert, highlight: true },
+            { id: 'accuse', label: 'Indict Culprit', icon: ShieldAlert, highlight: true },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -243,7 +249,7 @@ export const InvestigationPage = () => {
                   <Icon className={`w-4 h-4 ${tab.highlight ? 'text-[#D94B4B]' : 'text-[#D6A85F]'}`} />
                   <span>{tab.label}</span>
                 </div>
-                {tab.count !== undefined && (
+                {tab.count !== undefined && tab.count > 0 && (
                   <span className="text-[10px] font-mono text-gray-500 hidden md:inline">{tab.count}</span>
                 )}
               </button>
@@ -274,6 +280,7 @@ export const InvestigationPage = () => {
           {activeTab === 'evidence' && (
             <EvidenceList
               evidenceList={evidenceList}
+              suspects={suspects}
               reviewedIds={progress.reviewedEvidenceIds}
               bookmarkedIds={progress.bookmarkedEvidenceIds}
               onInspect={setSelectedEvidence}
@@ -282,9 +289,12 @@ export const InvestigationPage = () => {
             />
           )}
 
-          {activeTab === 'messages' && (
+          {activeTab === 'official_reports' && (
             <EvidenceList
-              evidenceList={evidenceList.filter((e) => e.type === 'message')}
+              evidenceList={evidenceList.filter((e) =>
+                ['police_report', 'medical_report'].includes(e.type)
+              )}
+              suspects={suspects}
               reviewedIds={progress.reviewedEvidenceIds}
               bookmarkedIds={progress.bookmarkedEvidenceIds}
               onInspect={setSelectedEvidence}
@@ -293,9 +303,24 @@ export const InvestigationPage = () => {
             />
           )}
 
-          {activeTab === 'cctv' && (
+          {activeTab === 'digital' && (
             <EvidenceList
-              evidenceList={evidenceList.filter((e) => e.type === 'cctv')}
+              evidenceList={evidenceList.filter((e) =>
+                ['message', 'email', 'call_log', 'access_log'].includes(e.type)
+              )}
+              suspects={suspects}
+              reviewedIds={progress.reviewedEvidenceIds}
+              bookmarkedIds={progress.bookmarkedEvidenceIds}
+              onInspect={setSelectedEvidence}
+              onToggleReview={handleToggleReview}
+              onToggleBookmark={handleToggleBookmark}
+            />
+          )}
+
+          {activeTab === 'visual' && (
+            <EvidenceList
+              evidenceList={evidenceList.filter((e) => ['cctv', 'photo', 'image'].includes(e.type))}
+              suspects={suspects}
               reviewedIds={progress.reviewedEvidenceIds}
               bookmarkedIds={progress.bookmarkedEvidenceIds}
               onInspect={setSelectedEvidence}

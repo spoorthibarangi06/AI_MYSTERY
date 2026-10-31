@@ -1,62 +1,5 @@
-export const getEvidenceGenerationPrompt = ({ blueprint, evidencePlanItem }) => {
-  return `You are a master forensic detective and investigative scenario writer.
-
-We have an established mystery case blueprint:
-- Case Title: "${blueprint.title}"
-- Summary: "${blueprint.story}"
-- Scene Location: "${blueprint.location}"
-- Incident Date: "${blueprint.incidentDate}"
-- Hidden Culprit: "${blueprint.solution.culpritSuspectId}"
-- Suspects List:
-${blueprint.suspects.map((s) => `  * ${s.suspectId}: ${s.name} (${s.occupation}) - Alibi: "${s.alibi}", Motive: "${s.motive}"`).join('\n')}
-
-EVIDENCE ITEM TO EXPAND:
-- ID: "${evidencePlanItem.evidenceId}"
-- Type: "${evidencePlanItem.type}"
-- Title: "${evidencePlanItem.title}"
-- Description: "${evidencePlanItem.description}"
-
-TASK:
-Generate the detailed investigative content for this evidence item.
-It must fit seamlessly into the overall puzzle. Clues must logically tie into the timeline and suspect alibis without being blindly obvious. All characters mentioned must be from the suspects list or realistic background figures (police, receptionist, etc.).
-
-Return ONLY a valid JSON object matching this schema:
-{
-  "evidenceId": "${evidencePlanItem.evidenceId}",
-  "type": "${evidencePlanItem.type}",
-  "title": "${evidencePlanItem.title}",
-  "description": "Comprehensive investigative analysis and forensic note explaining how this was retrieved.",
-  "discoveryLocation": "Specific room, phone device, corridor, or file cabinet where found",
-  "timestamp": "Timestamp matching the timeline (e.g. 10:42 PM)",
-  "relatedSuspectIds": ["suspect_1"],
-  "content": {
-    // If type === 'message':
-    // "sender": "Character Name",
-    // "receiver": "Character Name",
-    // "messages": [
-    //    { "sender": "Name", "text": "...", "time": "10:35 PM" }
-    // ]
-    //
-    // If type === 'cctv':
-    // "cameraLocation": "Corridor West Wing - Cam 3",
-    // "recordingTime": "11:15 PM - 11:22 PM",
-    // "observations": ["Point 1...", "Point 2..."],
-    // "transcript": "Detailed visual surveillance description of footage..."
-    //
-    // If type === 'witness_statement':
-    // "witnessName": "Name",
-    // "interviewTime": "1:00 AM",
-    // "statement": "Direct quote testimony of the witness..."
-    //
-    // If type === 'physical_evidence' or 'document' or 'image':
-    // "details": "Forensic laboratory notes, markings, serial numbers, fingerprint impressions, or document text...",
-    // "imagePrompt": "A highly atmospheric, realistic cinematic photo description of this clue for visual generation"
-  }
-}`;
-};
-
 export const getBatchEvidenceGenerationPrompt = ({ blueprint }) => {
-  return `You are a master forensic detective and investigative scenario writer.
+  return `You are a master forensic detective, intelligence analyst, and investigative document specialist.
 
 CASE BLUEPRINT:
 - Title: "${blueprint.title}"
@@ -65,96 +8,169 @@ CASE BLUEPRINT:
 - Incident Date: "${blueprint.incidentDate}"
 - Hidden Culprit: "${blueprint.solution.culpritSuspectId}"
 - Solution Overview: "${blueprint.solution.explanation}"
+- Key Deductive Clues: ${JSON.stringify(blueprint.solution.evidenceReasoning || [])}
 - Suspects:
 ${blueprint.suspects.map((s) => `  * ${s.suspectId}: ${s.name} (${s.occupation}) - Alibi: "${s.alibi}", Motive: "${s.motive}"`).join('\n')}
 
-EVIDENCE PLAN:
+EVIDENCE PLAN FROM BLUEPRINT:
 ${JSON.stringify(blueprint.evidencePlan || [], null, 2)}
 
 TASK:
-Generate the full collection of evidence items for this investigation.
-Ensure there is a rich mix:
-1. At least one WhatsApp-style message chat ('message') showing suspicious interactions.
-2. At least one CCTV surveillance record ('cctv') with timestamped footage analysis.
-3. At least one Witness Statement ('witness_statement') with nuanced testimony.
-4. Physical evidence / document items ('physical_evidence', 'document', 'image') with forensic notes.
+Generate a realistic, immersive collection of investigative evidence files for this case.
+Match the types requested in the evidence plan or select 5 to 7 varied, authentic formats relevant to the crime.
 
-Return ONLY a valid JSON array of evidence items matching this structure:
-[
-  {
-    "evidenceId": "ev_1",
-    "type": "message",
-    "title": "Encrypted WhatsApp Chat",
-    "description": "Exported message history retrieved from the victim's phone.",
-    "discoveryLocation": "Victim's mobile device",
-    "timestamp": "10:20 PM",
-    "relatedSuspectIds": ["suspect_1", "suspect_2"],
-    "content": {
-      "sender": "Suspect One",
-      "receiver": "Suspect Two",
-      "messages": [
-        { "sender": "Suspect One", "text": "Are we still doing this tonight?", "time": "10:14 PM" },
-        { "sender": "Suspect Two", "text": "Wait until the guard takes his break at 10:30.", "time": "10:17 PM" }
-      ]
+ALLOWED EVIDENCE TYPES & STRUCTURES:
+
+1. 'police_report':
+   category: "official_report"
+   source: "Department of Forensic Services / Precinct Special Unit"
+   content: {
+     "caseNumber": "PD-2026-9041",
+     "reportingOfficer": "Detective Marcus Cole, Badge #412",
+     "incidentSummary": "Official narrative of initial response and scene securing...",
+     "primaryObservations": [
+       "No forced entry at the front entrance.",
+       "Rear perimeter motion sensor tripped at 11:28 PM."
+     ],
+     "officerConclusions": "Preliminary assessment indicating premeditated insider access.",
+     "status": "ACTIVE INVESTIGATION"
+   }
+
+2. 'medical_report':
+   category: "official_report"
+   source: "Office of the Chief Medical Examiner / Forensic Pathology"
+   content: {
+     "examId": "ME-8834-A",
+     "examinerName": "Dr. Aris Thorne, Lead Forensic Pathologist",
+     "subjectName": "Victim / Patient Name",
+     "estimatedTimeOfTrauma": "11:30 PM - 11:45 PM",
+     "causeOfTraumaOrDeath": "Blunt force trauma / Sedative toxicity / etc.",
+     "externalInjuries": "Bruising pattern consistent with rubber-gripped tool...",
+     "toxicology": "Trace elements of neuromuscular blocking agent...",
+     "notes": "Corroborates the timeline of rapid incapacitation."
+   }
+
+3. 'message' (WhatsApp / Encrypted Chat):
+   category: "digital"
+   source: "Subpoenaed Mobile Device Extraction"
+   content: {
+     "sender": "Suspect Name",
+     "receiver": "Contact Name",
+     "messages": [
+       { "sender": "Name 1", "text": "Are the security cameras still cycling?", "time": "10:14 PM" },
+       { "sender": "Name 2", "text": "Yes, but be swift. The patrol returns in ten minutes.", "time": "10:17 PM" }
+     ]
+   }
+
+4. 'cctv':
+   category: "visual"
+   source: "Security Video Management Server"
+   content: {
+     "cameraLocation": "Corridor West Wing - Cam 04",
+     "recordingTime": "11:34 PM - 11:38 PM",
+     "observations": [
+       "Figure wearing dark outerwear enters frame avoiding overhead light sensor.",
+       "Individual uses digital keycard on secure door."
+     ],
+     "transcript": "Surveillance capture directly contradicts the suspect's stated alibi of being off-premises."
+   }
+
+5. 'witness_statement':
+   category: "witness_statement"
+   source: "Formal Deposition Division"
+   content: {
+     "witnessName": "Witness Full Name",
+     "witnessRole": "Security Guard / Night Custodian / Receptionist",
+     "interviewTime": "1:15 AM",
+     "investigator": "Detective Sarah Vance",
+     "statement": "Narrative testimony from the witness detailing what they saw or heard...",
+     "discrepancies": "Noted hesitation when asked about the master passkey."
+   }
+
+6. 'email':
+   category: "digital"
+   source: "Corporate Exchange Server Archive"
+   content: {
+     "from": "executive@corporation.com",
+     "to": "partner@privateclient.org",
+     "cc": "audit@consultancy.com",
+     "subject": "Confidential: Urgency regarding the pending audit discrepancy",
+     "date": "Incident Day, 4:45 PM",
+     "body": "Detailed email text revealing hidden conflict, secret demands, or covert meeting requests...",
+     "attachments": ["Q3_Financial_Deficit.pdf", "Encrypted_Key.bin"]
+   }
+
+7. 'call_log':
+   category: "digital"
+   source: "Cellular Carrier Warrant Record"
+   content: {
+     "subscriber": "Suspect Full Name",
+     "phoneNumber": "+1 (555) 019-8432",
+     "carrier": "Apex Telecom",
+     "records": [
+       { "time": "10:12 PM", "type": "Incoming", "number": "+1 (555) 014-2289", "contact": "Unknown Burner", "duration": "01m 45s", "cellTower": "Tower 4B - Downtown", "flagged": true },
+       { "time": "11:05 PM", "type": "Outgoing", "number": "+1 (555) 019-3310", "contact": "Alibi Witness", "duration": "00m 12s", "cellTower": "Tower 7A - Museum District", "flagged": false }
+     ]
+   }
+
+8. 'financial_record':
+   category: "physical"
+   source: "Forensic Financial Intelligence Unit"
+   content: {
+     "institution": "Zurich Heritage Bank",
+     "accountName": "Suspect or Shell Entity",
+     "accountNumber": "CH93-****-****-4912",
+     "transactions": [
+       { "date": "Incident Week", "description": "Offshore Wire - Cayman Trust", "type": "Credit", "amount": "$150,000.00", "balance": "$182,450.00", "flagged": true },
+       { "date": "Incident Day", "description": "Cash Withdrawal - ATM 08", "type": "Debit", "amount": "$5,000.00", "balance": "$177,450.00", "flagged": false }
+     ],
+     "forensicNotes": "Massive unexplained influx immediately prior to the incident."
+   }
+
+9. 'access_log':
+   category: "digital"
+   source: "Building Physical Security Database"
+   content: {
+     "facility": "St. Claire Executive Suites & Vault",
+     "terminalId": "Reader #07 - Vault Ante-Room",
+     "logs": [
+       { "time": "10:45 PM", "badgeId": "ID-0922", "userName": "Suspect One", "door": "Lower Atrium Door", "status": "GRANTED" },
+       { "time": "11:32 PM", "badgeId": "ID-0418", "userName": "Suspect Two", "door": "Secure Archive Entry", "status": "GRANTED" },
+       { "time": "11:36 PM", "badgeId": "ID-0418", "userName": "Suspect Two", "door": "Emergency Fire Exit", "status": "DENIED" }
+     ],
+     "notes": "Electronic footprint pinpoints location at the exact minute of the incident."
+   }
+
+10. 'handwritten_note':
+    category: "physical"
+    source: "Crime Scene Recovery Unit"
+    content: {
+      "discoveryPlace": "Found crumpled in the executive wastebasket",
+      "handwritingAnalysis": "Hastily written cursive script, high pressure strokes indicating agitation.",
+      "transcription": "The audit is scheduled for tomorrow morning. Move the asset tonight or everything we built is finished.",
+      "paperType": "Monogrammed hotel letterhead"
     }
-  },
-  {
-    "evidenceId": "ev_2",
-    "type": "cctv",
-    "title": "East Corridor Camera 04",
-    "description": "Surveillance log from the corridor leading to the private office.",
-    "discoveryLocation": "Security Control Room Server",
-    "timestamp": "10:32 PM",
-    "relatedSuspectIds": ["suspect_1"],
-    "content": {
-      "cameraLocation": "East Corridor Camera 04",
-      "recordingTime": "10:30 PM - 10:35 PM",
-      "observations": [
-        "A figure wearing a navy trench coat enters frame at 10:32 PM.",
-        "The figure avoids the primary light sensor."
-      ],
-      "transcript": "Surveillance shows a silhouette entering through the service stairs at 10:32 PM..."
+
+11. 'photo' or 'physical_evidence':
+    category: "visual" or "physical"
+    source: "Mobile Crime Laboratory"
+    content: {
+      "details": "Forensic close-up examination of physical item, scratched deadbolt, chemical residue, or footprint.",
+      "imagePrompt": "Cinematic high-contrast photograph of evidence marked with yellow evidence tent #03."
     }
-  },
-  {
-    "evidenceId": "ev_3",
-    "type": "witness_statement",
-    "title": "Security Guard Official Statement",
-    "description": "Interview recorded on-scene by the lead detective.",
-    "discoveryLocation": "Ground Floor Reception",
-    "timestamp": "11:50 PM",
-    "relatedSuspectIds": ["suspect_2"],
-    "content": {
-      "witnessName": "Officer Marcus Vance",
-      "interviewTime": "11:50 PM",
-      "statement": "I checked the logbook around 10:15 PM. Everything seemed quiet, but I noticed the rear exit door was unlatched when I returned from my patrol."
-    }
-  },
-  {
-    "evidenceId": "ev_4",
-    "type": "document",
-    "title": "Discrepancy Audit Sheet",
-    "description": "Found hidden inside the safe behind the oil painting.",
-    "discoveryLocation": "Private Office Safe",
-    "timestamp": "Incident Night",
-    "relatedSuspectIds": ["suspect_1"],
-    "content": {
-      "details": "Audit records indicating an unauthorized wire transfer of $240,000 scheduled for release at midnight.",
-      "imagePrompt": "A vintage desk with an illuminated ledger sheet showing stamped confidential seals and red ink corrections."
-    }
-  },
-  {
-    "evidenceId": "ev_5",
-    "type": "image",
-    "title": "Broken Latch on Service Door",
-    "description": "Forensic close-up photograph of the emergency staircase entrance.",
-    "discoveryLocation": "Rear Emergency Exit",
-    "timestamp": "11:10 PM",
-    "relatedSuspectIds": ["suspect_1"],
-    "content": {
-      "details": "Scratch marks on the deadbolt suggest forced entry or improper key use from someone unfamiliar with the newly installed lock.",
-      "imagePrompt": "Close up photo of a metallic heavy door latch with scratch marks illuminated by flashlight in a dark corridor."
-    }
-  }
-]`;
+
+OUTPUT REQUIREMENTS:
+- Return ONLY a valid JSON array of evidence objects.
+- Each evidence item must have:
+  "evidenceId": "EV-001", "EV-002", etc.
+  "type": one of the allowed types above
+  "category": "digital" | "visual" | "official_report" | "witness_statement" | "physical"
+  "title": descriptive title
+  "source": realistic investigative department / subpoena origin
+  "description": 1-2 sentences of investigative context
+  "discoveryLocation": specific location
+  "timestamp": matching the timeline
+  "relatedSuspectIds": ["suspect_1", ...]
+  "content": { ...type-specific content as detailed above... }
+`;
 };

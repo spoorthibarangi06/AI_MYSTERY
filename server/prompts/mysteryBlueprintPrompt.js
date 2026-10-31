@@ -16,7 +16,17 @@ CRITICAL RULES FOR LOGICAL MYSTERY PUZZLE DESIGN:
 4. No suspect should look obviously guilty at a glance—all suspects must appear believable.
 5. The puzzle must be solvable through deductive reasoning: there must be at least 3 distinct clues that together uniquely identify the culprit and invalidate their alibi or implicate their method/motive.
 6. The timeline must be completely consistent and airtight.
-7. Return ONLY a valid JSON object matching the exact schema below. Do not wrap with markdown code fences if possible, or use standard json format.
+7. DYNAMIC EVIDENCE VARIETY RULE:
+   Do NOT generate the same fixed evidence types for every mystery. Tailor the evidence plan realistically to the crime category:
+   - Murder Mystery: e.g., 'medical_report' (autopsy/coroner), 'police_report', 'photo', 'cctv', 'witness_statement', 'message'.
+   - Cybercrime: e.g., 'email', 'access_log' (server/IP logs), 'financial_record', 'message', 'police_report'.
+   - Theft: e.g., 'cctv', 'access_log' (keycard audit), 'witness_statement', 'message', 'police_report'.
+   - Missing Person: e.g., 'call_log', 'message', 'witness_statement', 'photo', 'police_report'.
+   - Corporate Espionage: e.g., 'email', 'financial_record', 'access_log', 'witness_statement', 'cctv'.
+   - Hidden Identity / General: Choose 5-7 varied, realistic evidence formats from:
+     ['message', 'cctv', 'police_report', 'witness_statement', 'medical_report', 'email', 'call_log', 'financial_record', 'access_log', 'photo', 'handwritten_note', 'document'].
+
+8. Return ONLY a valid JSON object matching the exact schema below.
 
 JSON OUTPUT STRUCTURE:
 {
@@ -55,39 +65,49 @@ JSON OUTPUT STRUCTURE:
       "dateTime": "10:15 PM",
       "description": "Chronological factual event description.",
       "relatedSuspects": ["suspect_1"],
-      "relatedEvidence": ["ev_msg_1"]
+      "relatedEvidence": ["EV-001"]
     }
   ],
   "evidencePlan": [
     {
-      "evidenceId": "ev_msg_1",
+      "evidenceId": "EV-001",
+      "type": "police_report",
+      "category": "official_report",
+      "source": "Metropolitan Police Department",
+      "title": "Initial Crime Scene Incident Report",
+      "description": "Official intake report from the responding detective unit."
+    },
+    {
+      "evidenceId": "EV-002",
+      "type": "medical_report",
+      "category": "official_report",
+      "source": "Office of the Chief Medical Examiner",
+      "title": "Forensic Pathology Preliminary Report",
+      "description": "Examination of victim injuries, time of trauma, and toxicology notes."
+    },
+    {
+      "evidenceId": "EV-003",
       "type": "message",
-      "title": "Encrypted Chat Fragment",
-      "description": "Text exchange hinting at secret meeting."
+      "category": "digital",
+      "source": "Subpoenaed Mobile Device Backup",
+      "title": "Encrypted WhatsApp Exchange",
+      "description": "Recovered chat thread establishing suspicious scheduling."
     },
     {
-      "evidenceId": "ev_img_1",
-      "type": "image",
-      "title": "Crime Scene Photograph",
-      "description": "Photograph of the desk and broken window latch."
-    },
-    {
-      "evidenceId": "ev_cctv_1",
+      "evidenceId": "EV-004",
       "type": "cctv",
-      "title": "Hallway Camera Feed #4",
-      "description": "Time-stamped recording of the rear corridor."
+      "category": "visual",
+      "source": "Facility Security Terminal 02",
+      "title": "Service Corridor Camera 04 Log",
+      "description": "Surveillance capture contradicting stated alibi."
     },
     {
-      "evidenceId": "ev_wit_1",
-      "type": "witness_statement",
-      "title": "Security Guard Deposition",
-      "description": "Statement regarding access keys."
-    },
-    {
-      "evidenceId": "ev_doc_1",
-      "type": "document",
-      "title": "Financial Audit Report / Ledger",
-      "description": "Discrepancy record."
+      "evidenceId": "EV-005",
+      "type": "access_log",
+      "category": "digital",
+      "source": "Central IT Access Server",
+      "title": "Biometric & Keycard Access Manifest",
+      "description": "Door badge scans recorded during the critical time window."
     }
   ]
 }`;

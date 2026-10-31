@@ -94,6 +94,8 @@ export const runMysteryGenerationPipeline = async (mysteryId) => {
       mysteryId: mystery._id,
       evidenceId: e.evidenceId,
       type: e.type,
+      category: e.category,
+      source: e.source,
       title: e.title,
       description: e.description,
       content: e.content,
@@ -101,6 +103,7 @@ export const runMysteryGenerationPipeline = async (mysteryId) => {
       relatedSuspectIds: e.relatedSuspectIds,
       discoveryLocation: e.discoveryLocation,
       timestamp: e.timestamp,
+      metadata: e.metadata || {},
     }));
     await Evidence.insertMany(evidenceToSave);
 

@@ -177,11 +177,13 @@ const generateLocalFallback = (prompt) => {
         }
       ],
       evidencePlan: [
-        { evidenceId: "ev_1", type: "message", title: "Encrypted Telegram Conversation", description: "Chat retrieved from suspect's phone." },
-        { evidenceId: "ev_2", type: "cctv", title: "Corridor Camera 04 Feed", description: "Stairwell footage recorded at 11:36 PM." },
-        { evidenceId: "ev_3", type: "witness_statement", title: "Patrol Guard Statement", description: "Deposition regarding the false garden alarm." },
-        { evidenceId: "ev_4", type: "document", title: "Security Firmware Log", description: "Audit trail of camera sensor overrides." },
-        { evidenceId: "ev_5", type: "image", title: "Pry Markings on Master Junction", description: "Forensic photo of the electrical fuse panel." }
+        { evidenceId: "EV-001", type: "police_report", category: "official_report", title: "Initial Crime Scene Incident Report", description: "Responding detective intake briefing." },
+        { evidenceId: "EV-002", type: "message", category: "digital", title: "Encrypted WhatsApp Conversation", description: "Recovered message thread from an unlinked burner SIM." },
+        { evidenceId: "EV-003", type: "cctv", category: "visual", title: "West Stairwell Camera 04 Feed", description: "Surveillance snapshot capturing movement during perimeter dispatch." },
+        { evidenceId: "EV-004", type: "access_log", category: "digital", title: "Terminal Biometric & Door Access Manifest", description: "Audit logs of electronic keycard swipes." },
+        { evidenceId: "EV-005", type: "medical_report", category: "official_report", title: "Forensic Examination Report", description: "Toxicology and trauma analysis on the incapacitated guard." },
+        { evidenceId: "EV-006", type: "call_log", category: "digital", title: "Carrier Subpoena: Mobile Call Records", description: "Cellular logs cross-referenced with tower locations." },
+        { evidenceId: "EV-007", type: "handwritten_note", category: "physical", title: "Crumpled Memorandum Fragment", description: "Recovered from the lower maintenance locker." }
       ]
     };
   }
@@ -189,8 +191,33 @@ const generateLocalFallback = (prompt) => {
   // Fallback for evidence batch
   return [
     {
-      evidenceId: "ev_1",
+      evidenceId: "EV-001",
+      type: "police_report",
+      category: "official_report",
+      source: "Metro Police Crime Scene Division",
+      title: "Initial Crime Scene Incident Report",
+      description: "Official intake dossier compiled by lead responding officer Detective R. Miller.",
+      discoveryLocation: "4th Floor Vault Room",
+      timestamp: "11:50 PM",
+      relatedSuspectIds: ["suspect_1", "suspect_2"],
+      content: {
+        caseNumber: "CR-2026-8841-A",
+        reportingOfficer: "Detective Ray Miller, Badge #904",
+        incidentSummary: "At approximately 11:45 PM, units responded to an automated silent alert at the St. Claire Gallery. Perimeter doors were intact; vault heavy door was unlocked via administrative bypass credentials.",
+        primaryObservations: [
+          "No kinetic forced entry on vault door mechanism; bypass executed with authorized technician passcode.",
+          "Exterior garden perimeter sensor tripped at 11:28 PM, luring secondary security guard away.",
+          "4-minute diagnostic telemetry freeze occurred between 11:34 PM and 11:38 PM."
+        ],
+        officerConclusions: "The incident indicates high technical competence and inside knowledge of the firmware architecture.",
+        status: "ACTIVE INVESTIGATION"
+      }
+    },
+    {
+      evidenceId: "EV-002",
       type: "message",
+      category: "digital",
+      source: "Subpoenaed Mobile Device Extraction",
       title: "Encrypted WhatsApp Conversation",
       description: "Recovered message thread from an unlinked burner SIM found in the maintenance locker.",
       discoveryLocation: "Maintenance locker B-3",
@@ -207,9 +234,11 @@ const generateLocalFallback = (prompt) => {
       }
     },
     {
-      evidenceId: "ev_2",
+      evidenceId: "EV-003",
       type: "cctv",
-      title: "West Stairwell Camera 04",
+      category: "visual",
+      source: "Building Physical Security Video Server",
+      title: "West Stairwell Camera 04 Feed",
       description: "Surveillance snapshot capturing suspicious movement during the alarm dispatch.",
       discoveryLocation: "Security Terminal Server 01",
       timestamp: "11:36 PM",
@@ -225,43 +254,84 @@ const generateLocalFallback = (prompt) => {
       }
     },
     {
-      evidenceId: "ev_3",
-      type: "witness_statement",
-      title: "Officer Vance Witness Interview",
-      description: "Official statement taken 40 minutes post-incident by Detective Miller.",
-      discoveryLocation: "Security Station Desk",
-      timestamp: "Incident Night",
+      evidenceId: "EV-004",
+      type: "access_log",
+      category: "digital",
+      source: "Central Access Control Database",
+      title: "Terminal Biometric & Door Access Manifest",
+      description: "Electronic keycard swipe audit logs from the 3rd and 4th floors.",
+      discoveryLocation: "Security Command Hub",
+      timestamp: "11:15 PM - 11:45 PM",
       relatedSuspectIds: ["suspect_2", "suspect_4"],
       content: {
-        witnessName: "Officer David Vance",
-        interviewTime: "12:20 AM",
-        statement: "At exactly 11:28 PM, the terminal sounded an intrusion alert from the rear rose garden. Elena told me she would monitor the main bank while I went outside. When I got to the garden, a wire was cut on purpose to trip the circuit. By the time I walked back inside, Elena claimed everything had been quiet."
+        facility: "St. Claire Gallery - High Security Zone",
+        terminalId: "Reader Bank #04 - West Wing",
+        logs: [
+          { time: "11:10 PM", badgeId: "ID-4091", userName: "Arthur Pendelton", door: "Curator Library Door", status: "GRANTED" },
+          { time: "11:29 PM", badgeId: "ID-8824", userName: "Elena Rostova", door: "Basement IT Substation", status: "GRANTED" },
+          { time: "11:35 PM", badgeId: "ID-8824", userName: "Elena Rostova", door: "West Stairwell Fire Exit", status: "GRANTED" },
+          { time: "11:37 PM", badgeId: "ID-8824", userName: "Elena Rostova", door: "Vault Ante-Chamber Gate", status: "GRANTED" },
+          { time: "11:42 PM", badgeId: "ID-1002", userName: "Julian Cross", door: "Main Atrium Turnstile", status: "DENIED" }
+        ],
+        notes: "Card #8824 (assigned to Elena) was swiped at the Vault Gate precisely during the camera loop."
       }
     },
     {
-      evidenceId: "ev_4",
-      type: "document",
-      title: "Firmware Maintenance Audit Log",
-      description: "System kernel dump showing timestamps of administrative terminal logins.",
-      discoveryLocation: "IT Control Hub",
-      timestamp: "11:15 PM",
+      evidenceId: "EV-005",
+      type: "medical_report",
+      category: "official_report",
+      source: "Office of the Chief Medical Examiner",
+      title: "Forensic Medical Examination Report",
+      description: "Toxicology and clinical examination of the security guard found unconscious.",
+      discoveryLocation: "Ground Floor Security Booth",
+      timestamp: "12:15 AM",
       relatedSuspectIds: ["suspect_2"],
       content: {
-        details: "Kernel Log #8824: Terminal #02 (Basement) initiated an administrative override at 11:31:04 PM. Firmware hotfix 'SecLoop-v4' applied under credential 'E_ROSTOVA_SEC'. 4-minute telemetry pause authorized.",
-        imagePrompt: "Terminal screen showing glowing green code matrix with highlighted security bypass authorization."
+        examId: "ME-2026-092",
+        examinerName: "Dr. Evelyn Ward, Chief Forensic Toxicologist",
+        subjectName: "Officer David Vance (Security Guard)",
+        estimatedTimeOfTrauma: "11:30 PM",
+        causeOfTraumaOrDeath: "Acute Isoflurane Inhalation / Rapid Sedation",
+        externalInjuries: "Minor dermal abrasion on cervical collar; no signs of blunt head trauma.",
+        toxicology: "High-concentration aerosolized halogenated anesthetic detected in nasal swab.",
+        notes: "Agent delivered via aerosol canister requiring technician-level handling precautions."
       }
     },
     {
-      evidenceId: "ev_5",
-      type: "physical_evidence",
-      title: "Damp Muddy Boot Impression",
-      description: "High-contrast forensic cast taken from the marble threshold just outside the vault entrance.",
-      discoveryLocation: "Vault Entrance Threshold",
-      timestamp: "11:55 PM",
+      evidenceId: "EV-006",
+      type: "call_log",
+      category: "digital",
+      source: "Apex Cellular Carrier Subpoena",
+      title: "Carrier Subpoena: Mobile Call Records",
+      description: "Official call detail records (CDR) obtained under emergency court warrant.",
+      discoveryLocation: "Apex Telecom Legal Compliance",
+      timestamp: "Incident Night (10:00 PM - 12:00 AM)",
+      relatedSuspectIds: ["suspect_2", "suspect_3"],
+      content: {
+        subscriber: "Elena Rostova",
+        phoneNumber: "+1 (555) 018-9921",
+        carrier: "Apex Telecom Wireless",
+        records: [
+          { time: "10:15 PM", type: "Outgoing", number: "+1 (555) 014-9900", contact: "Julian Cross", duration: "03m 14s", cellTower: "Tower 12 - West River", flagged: true },
+          { time: "11:22 PM", type: "Incoming", number: "+1 (555) 019-0021", contact: "Burner SIM", duration: "00m 45s", cellTower: "Tower 04 - Gallery District", flagged: true },
+          { time: "11:48 PM", type: "Outgoing", number: "+1 (555) 018-7711", contact: "Taxi Service", duration: "01m 02s", cellTower: "Tower 04 - Gallery District", flagged: false }
+        ]
+      }
+    },
+    {
+      evidenceId: "EV-007",
+      type: "handwritten_note",
+      category: "physical",
+      source: "Scene Recovery Processing Unit",
+      title: "Crumpled Memorandum Fragment",
+      description: "Recovered from the lower maintenance trash receptacle behind Terminal #02.",
+      discoveryLocation: "Maintenance Waste Receptacle B-2",
+      timestamp: "Incident Night",
       relatedSuspectIds: ["suspect_2"],
       content: {
-        details: "Tread analysis matches specialized tactical combat footwear size 38 EU, containing trace elements of peat moss consistent with the gallery's exterior rose garden.",
-        imagePrompt: "Forensic yellow evidence marker next to a crisp muddy boot print on polished dark marble floor."
+        discoveryPlace: "Lower maintenance trash receptacle, crumpled inside a blue surgical glove box.",
+        handwritingAnalysis: "Fast right-slanting cursive script matching Elena Rostova's personnel file signatures.",
+        transcription: "Override code: 9942-FIRM. Remember to scrub buffer logs from Server 2 before morning shift arrives.",
       }
     }
   ];
