@@ -7,11 +7,16 @@ export const cleanAndParseJSON = (rawText) => {
   if (!rawText) return null;
   let cleaned = rawText.trim();
 
-  // Strip markdown code fences ```json ... ``` or ``` ... ```
-  if (cleaned.startsWith('```')) {
-    cleaned = cleaned.replace(/^```(?:json)?\s*/i, '');
-    cleaned = cleaned.replace(/\s*```$/, '');
+  // Try direct parse first
+  try {
+    return JSON.parse(cleaned);
+  } catch (e) {
+    // Continue with markdown stripping
   }
+
+  // Strip markdown code fences ```json ... ``` or ``` ... ```
+  cleaned = cleaned.replace(/^```(?:json)?\s*/i, '');
+  cleaned = cleaned.replace(/\s*```$/, '');
 
   // Find first { or [ and last } or ]
   const firstBrace = cleaned.indexOf('{');
@@ -32,7 +37,17 @@ export const cleanAndParseJSON = (rawText) => {
     cleaned = cleaned.substring(start, end + 1);
   }
 
-  return JSON.parse(cleaned);
+  try {
+    return JSON.parse(cleaned);
+  } catch (err) {
+    // Strip trailing commas before closing braces/brackets
+    try {
+      const fixed = cleaned.replace(/,\s*([}\]])/g, '$1');
+      return JSON.parse(fixed);
+    } catch (e2) {
+      throw err;
+    }
+  }
 };
 
 /**
@@ -55,7 +70,8 @@ export const callGemini = async (prompt, maxRetries = 2) => {
         generationConfig: {
           temperature: 0.7,
           topP: 0.95,
-          maxOutputTokens: 4096,
+          maxOutputTokens: 16384,
+          responseMimeType: 'application/json',
         },
       });
 
@@ -72,7 +88,7 @@ export const callGemini = async (prompt, maxRetries = 2) => {
     }
   }
 
-  console.warn(`[GeminiService] Gemini calls failed (${lastError.message}). Falling back to local procedural generator.`);
+  console.warn(`[GeminiService] Gemini calls failed (${lastError.message}). Falling back to procedural synthesizer.`);
   return generateLocalFallback(prompt);
 };
 
