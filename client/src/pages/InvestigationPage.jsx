@@ -15,6 +15,7 @@ import {
   MessageSquare,
   Video,
   Clock,
+  Shield,
   ShieldAlert,
   LayoutDashboard,
   CheckCircle,

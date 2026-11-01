@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Pages
 import { LandingPage } from './pages/LandingPage';
@@ -23,7 +24,9 @@ function AppLayout({ children }) {
   return (
     <div className="min-h-screen bg-[#0B0F14] flex flex-col font-sans">
       <Navbar />
-      <div className="flex-1">{children}</div>
+      <div className="flex-1">
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </div>
       {!isInvestigationRoom && <Footer />}
     </div>
   );
